@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Great+Vibes" rel="stylesheet">
+</head>
+<body>
+<style>
+body {
+background-image: url('https://www.xmple.com/wallpaper/single-one-colour-red-solid-color-plain-1280x720-c-fbaca8-f-24.svg');
+} 
+#player1, #player2 {
+height: 500px;
+flex: 1;
+margin-top: 40px;
+}
+#player1 {
+background-color: #f1f1f2;
+margin-left: 110px;
+position: relative;
+}
+#player2{
+background-color: #ffffff;
+margin-right: 110px;
+}
+#wrapper {
+display: flex;
+}
+#name1 {
+position: absolute;
+font-size: 60px;
+font-family: 'Amatic SC';
+top: 10px;
+left: 190px;
+}
+#name2 {
+position: absolute;
+font-size: 60px;
+font-family: 'Amatic SC';
+top: 40px;
+left: 900px;
+}
+#score1 {
+position: absolute;
+font-size: 110px;
+font-family: 'Amatic SC';
+top: 100px;
+left: 220px;
+color: #f52549;
+}
+#score2 {
+position: absolute;
+font-size: 110px;
+font-family: 'Amatic SC';
+top: 140px;
+left: 920px;
+color: #f52549;
+}
+#round1 {
+position: absolute;
+font-size: 50px;
+font-family: 'Amatic SC';
+top: 300px;
+left: 190px;
+background-color: #f52549;
+color: white;
+}
+#round2 {
+position: absolute;
+font-size: 50px;
+font-family: 'Amatic SC';
+top: 330px;
+left: 900px;
+background-color: #f52549;
+color: white;
+}
+#s1 {
+position: absolute;
+font-size: 50px;
+font-family: 'Amatic SC';
+top: 360px;
+left: 190px;
+background-color: #f52549;
+width:114px;
+text-align: center;
+color: white;
+}
+#s2 {
+position: absolute;
+font-size: 50px;
+font-family: 'Amatic SC';
+top: 390px;
+left: 899.5px;
+background-color: #f52549;
+text-align: center;
+width:114.5px;
+color: white;
+}
+#pop-up {
+background-color: #f1f1f2;
+font-size: 20px;
+width: 710px;
+position: absolute;
+visibility: hidden;
+}
+.btn2 {
+-webkit-appearance: none;
+outline: 0;
+font-weight: bold;
+border-radius: 100%;
+background-color: black;
+color: white;
+cursor: pointer;
+}
+.btn2:hover {
+-webkit-appearance: none;
+outline: 0;
+font-weight: bold;
+border-radius: 100%;
+background-color: black;
+color: white;
+}
+.btn1 {
+position: absolute;
+border: 1px solid #f52549;
+top: 12px;
+left: 1200px;
+outline: 0;
+font-size: 18px;
+cursor: pointer;
+background-color: #f52549;
+}
+.btn1:hover {
+background-color: #f52549;
+outline: none;
+} 
+.btn3 {
+position: absolute;
+top: 350px;
+left: 624px;
+background-color: Transparent;
+font-size: 22px;
+}
+.btn4 {
+position: absolute;
+top: 400px;
+left: 636px;
+background-color: Transparent;
+font-size: 22px;
+}
+.btn5 {
+position: absolute;
+top: 40px;
+left: 600px;
+background-color: Transparent;
+font-size: 22px;
+}
+.btn5:hover {
+outline: none;
+} 
+#abc {
+position: absolute;
+top: 100px;
+left: 585px;
+}
+.active {
+border-bottom: 2px solid #f52549;
+}
+</style>
+<div id="wrapper">
+<div id="player1">
+<div id="name1" class="active">Player 1</div> 
+<div id="score1">0</div>
+<div id="round1">Current</div>
+<div id="s1">0</div>
+</div>
+<div id="player2">
+<div id="name2">Player 2</div>
+<div id="score2">0</div>
+<div id="round2">Current</div>
+<div id="s2">0</div>
+</div>
+</div>
+<button class="btn1 btn-primary">Rules</button>
+<div id="pop-up">
+<ol>
+<li>Each turn, a player repeatedly rolls a die until either a 1 is rolled or the <button class="btn btn2">✖</button>player decides to "hold".</li>
+<li>If the player rolls a 1, they score nothing and it becomes the next player's turn.</li>
+<li>If the player rolls any other number, it is added to their "current" total and the player's turn continues.</li>
+<li>If a player chooses to "hold", their "current" total is added to their score, and it becomes the next player's turn.</li>
+<li>The first player to score 50 or more points wins.</li>
+</ol>
+</div>
+<button class="btn btn3">Roll Dice <i class="fa fa-spinner"></i></button>
+<button class="btn btn4">Hold <i class="fa fa-hand-paper-o"></i></button>
+<button class="btn btn5">New Game <i class="fa fa-plus-square-o" aria-hidden="true"></i></button>
+<div id="abc"><img src ="https://raw.githubusercontent.com/joaoeffting/dom-pig-game/master/dice-1.png" width="60%" height="60%"></div>
+<script>
+$(document).ready(function() {
+var current=0, player = 0;
+$(".btn1").click(function() {
+$("div").not("#pop-up").css('opacity','0.4');
+$("#abc").css('opacity','0.2');
+$(".btn3,.btn4").css('opacity', '0.2');
+$("#pop-up").css('left','300px');
+$("#pop-up").css('top', '100px');
+$("#pop-up").css('visibility','visible');
+});
+$(".btn2").click(function() {
+$("div").not("#pop-up").css('opacity','1');
+$("#abc").css('opacity','1');
+$(".btn3,.btn4").css('opacity', '1');
+$("#pop-up").css('visibility','hidden');
+$("#pop-up").css('left', '100px');
+$("#pop-up").css('top', '550px');
+});
+$(".btn3").click(function() {
+var x = Math.floor((Math.random()*6)+1);
+switch(x) {
+case 1 : 
+$("img").attr('src','https://raw.githubusercontent.com/joaoeffting/dom-pig-game/master/dice-1.png');
+break;
+case 2: 
+$("img").attr('src','https://raw.githubusercontent.com/joaoeffting/dom-pig-game/master/dice-2.png');
+break;
+case 3:
+$("img").attr('src','https://raw.githubusercontent.com/joaoeffting/dom-pig-game/master/dice-3.png');
+break;
+case 4:
+$("img").attr('src','https://raw.githubusercontent.com/joaoeffting/dom-pig-game/master/dice-4.png');
+break;
+case 5:
+$("img").attr('src','https://raw.githubusercontent.com/joaoeffting/dom-pig-game/master/dice-5.png');
+break;
+case 6:
+$("img").attr('src','https://raw.githubusercontent.com/joaoeffting/dom-pig-game/master/dice-6.png');
+break;
+}
+calculate(x);
+});
+function calculate(x) {
+if(player==0) {
+if(x==1) {
+current = 0;
+$("#s1").text(current);
+player = !player;
+$("#name1").removeClass("active");
+$("#name2").addClass("active");
+}
+else {
+current+=x;
+$("#s1").text(current);
+result(current);
+} 
+} 
+else if(player==1) {
+if(x==1) {
+current = 0;
+$("#s2").text(current);
+player = !player;
+$("#name2").removeClass("active");
+$("#name1").addClass("active");
+}
+else {
+current+=x;
+$("#s2").text(current);
+result(current);
+} 
+} 
+} 
+$(".btn4").click(function() {
+if(player==0) {
+$("#name1").removeClass("active");
+$("#name2").addClass("active");
+var z = parseInt($("#score1").text());
+z = z+current;
+$("#score1").text(z);
+player = !player;
+current = 0;
+$("#s1").text(current);
+} 
+else if(player==1) {
+$("#name2").removeClass("active");
+$("#name1").addClass("active");
+var z = parseInt($("#score2").text());
+z = z+current;
+$("#score2").text(z);
+player = !player;
+current = 0;
+$("#s2").text(current);
+} 
+});
+$(".btn5").click(function() {
+current = 0;
+$("#score1").text(current);
+$("#score2").text(current);
+$("#s1").text(current);
+$("#s2").text(current);
+$("#name1").text("Player 1");
+$("#name2").text("Player 2");
+$("#name2").removeClass("active");
+$("#name1").addClass("active");
+$("img").attr('src','https://raw.githubusercontent.com/joaoeffting/dom-pig-game/master/dice-1.png');
+player = 0;
+}); 
+function result(z) {
+if(player==0) {
+var y = parseInt($("#score1").text());
+if((y+z)>=50) {
+$("#name1").text("Winner");
+$("#score1").text(y+z);
+current = 0;
+$("#s1").text(current);
+} 
+}
+else if(player==1) {
+var y = parseInt($("#score2").text());
+if((y+z)>=50) {
+$("#name2").text("Winner");
+$("#score2").text(y+z);
+current = 0;
+$("#s2").text(current);
+} 
+} 
+} 
+});
+</script>
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
